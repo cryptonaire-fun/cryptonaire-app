@@ -36,8 +36,8 @@ export interface ButtonProps extends TouchableOpacityProps {
 // ─── Variant maps ─────────────────────────────────────────────────────────────
 
 const VARIANT_CONTAINER: Record<ButtonVariant, string> = {
-    primary: "bg-amber-400",
-    outline: "bg-transparent border border-zinc-700",
+    primary: "bg-primary",
+    outline: "bg-transparent border border-zinc-300 dark:border-zinc-700",
     ghost: "bg-transparent",
     soft: "bg-amber-400/15",
     danger: "bg-red-500",
@@ -45,18 +45,18 @@ const VARIANT_CONTAINER: Record<ButtonVariant, string> = {
 };
 
 const VARIANT_LABEL: Record<ButtonVariant, string> = {
-    primary: "text-zinc-950",
-    outline: "text-zinc-100",
-    ghost: "text-zinc-300",
-    soft: "text-amber-400",
+    primary: "text-white",
+    outline: "text-zinc-900 dark:text-zinc-100",
+    ghost: "text-zinc-600 dark:text-zinc-300",
+    soft: "text-amber-600 dark:text-amber-400",
     danger: "text-white",
     wallet: "text-zinc-950",
 };
 
 const VARIANT_INDICATOR_COLOR: Record<ButtonVariant, string> = {
-    primary: "#09090b",
-    outline: "#ffffff",
-    ghost: "#d4d4d8",
+    primary: "#ffffff",
+    outline: "#a1a1aa",
+    ghost: "#a1a1aa",
     soft: "#fbbf24",
     danger: "#ffffff",
     wallet: "#09090b",
@@ -99,7 +99,8 @@ export function Button({
             activeOpacity={0.82}
             disabled={isDisabled}
             style={[
-                variant === "wallet" ? styles.walletShadow : styles.shadow,
+                variant === "wallet" ? styles.walletShadow :
+                    (variant === "ghost" || variant === "outline" ? null : styles.shadow),
                 style,
             ]}
             className={cn(

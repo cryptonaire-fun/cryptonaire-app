@@ -24,6 +24,7 @@ module.exports = {
                     primary: "#3C6FFF",
                     DEFAULT: "#3C6FFF",
                 },
+                primary: "#3C6FFF",
                 accent: {
                     mint: "#24D6A5",
                     sun: "#FFB020",
