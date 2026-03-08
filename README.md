@@ -16,7 +16,9 @@ Through its captivating UI, players navigate a level map, track their progress i
 - **Engaging Gameplay:** Answer diverse questions to earn points and advance through progressively challenging levels.
 - **Level Progression System:** A mathematical progression model where the required questions to advance increase per level (e.g., `level * 10`). Visual level maps indicate completed and current levels.
 - **Real-time Leaderboard:** Compete against other players globally. The leaderboard dynamically updates as points are accumulated.
-- **Web3 Integration:** Integrated with Solana (`@solana/web3.js`), enabling crypto-native functionalities like wallet connectivity.
+- **Player Stats Screen:** Dedicated stats view showing level progress bar, total points, $SKR tokens, questions answered, and current level in a visual stat grid.
+- **Token Withdrawal:** Players can withdraw earned $SKR tokens directly to their connected Solana wallet. The backend treasury signs and funds the on-chain SPL transfer — no SOL balance required in the user's wallet.
+- **Web3 Integration:** Integrated with Solana (`@solana/web3.js`), enabling crypto-native functionalities like wallet connectivity and on-chain token transfers.
 - **Dynamic Theming:** Comprehensive dark mode and system theme support, fully adaptable across all app screens and customized UI components.
 - **Offline & Caching Support:** Powered by React Query to efficiently cache user data and leaderboard stats.
 
@@ -43,12 +45,16 @@ This project is built using modern mobile development tools, heavily utilizing t
 cryptonaire-app/
 ├── app/                  # Expo Router based navigation structure
 │   ├── (tabs)/           # Main application tabs (Gameplay, Leaderboard, Menu)
+│   ├── stats.tsx         # Player stats modal screen
+│   ├── withdraw.tsx      # Token withdrawal modal screen
 │   ├── _layout.tsx       # Root layout
-│   └── ...               
+│   └── ...
 ├── assets/               # Static assets (images, fonts, Lottie animations)
 ├── components/           # Reusable UI components
 │   └── ui/               # Core UI elements (Buttons, Cards, Maps)
 ├── constants/            # Global constants and configuration
+├── docs/                 # Internal API and module documentation
+│   └── USER-API.md       # User module API reference
 ├── hooks/                # Custom React hooks (e.g., useTheme, useAuth)
 ├── lib/                  # Core utility libraries
 │   ├── api/              # API clients and endpoints configurations
@@ -121,6 +127,36 @@ cryptonaire-app/
 The application fully implements the **NativeWind (v4)** paradigm, allowing us to write standard Tailwind CSS utility classes directly on React Native core components.
 
 A unified theme token system provides fully dynamic dark/light mode switching, deeply integrated into `tailwind.config.js` and custom hooks (`use-color-scheme.ts`). Ensure to use CSS variables defined in `global.css` if you are extending the theme colors.
+
+---
+
+## 🖥️ Screens
+
+| Screen | Route | Description |
+| :--- | :--- | :--- |
+| Gameplay | `/(tabs)/index` | Main trivia gameplay loop |
+| Leaderboard | `/(tabs)/leaderboard` | Global real-time rankings |
+| Menu | `/(tabs)/menu` | Profile, stats, withdraw, settings |
+| Stats | `/stats` | Level progress bar + Points, SKR Tokens, Questions Answered, and Current Level stat grid |
+| Withdraw | `/withdraw` | Withdraw earned $SKR tokens to a connected Solana wallet; treasury signs the on-chain SPL transfer |
+| Change Username | `/change-username` | Update display username (3–30 chars, unique) |
+| Game | `/game` | Active question/answer session |
+
+---
+
+## 💸 Token Withdrawal
+
+Players accumulate `$SKR` tokens through gameplay. The withdrawal flow works as follows:
+
+1. From the **Menu** tab, tap **Withdraw Tokens**.
+2. The **Withdraw** screen displays the current `$SKR` balance.
+3. Enter an amount (or tap **Max**) and confirm.
+4. The app calls `POST /user/me/withdraw` via the `useWithdrawMutation` hook.
+5. The backend atomically deducts the balance, then transfers SPL tokens from the treasury to the user's Solana wallet on **devnet**.
+6. The treasury wallet covers the transaction fee — users do **not** need SOL in their wallet.
+7. If the on-chain transfer fails, the in-app balance is automatically restored.
+
+> See [`docs/USER-API.md`](docs/USER-API.md) for the full API reference.
 
 ---
 
